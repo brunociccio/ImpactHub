@@ -1,13 +1,18 @@
 package br.com.plusoft.impacthub.model;
 
-import jakarta.persistence.*;
+import java.time.LocalDate;
+import java.util.List;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToMany;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.time.LocalDate;
-import java.util.List;
 
 @Data
 @Entity(name = "TB_IMPACTHUB_RANKING_EMPRESAS")
@@ -20,10 +25,11 @@ public class RankingEmpresas {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idRanking;
 
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "empresa_id")
-    private List<Empresas> melhoresEmpresas;
+    @OneToMany
+    @JoinColumn(name = "empresa_id")  // Refere-se ao idUsuario de Cadastro que representa a empresa
+    private List<Cadastro> melhoresEmpresas;
 
     private LocalDate dataAtualizacao;
 }
+
 
