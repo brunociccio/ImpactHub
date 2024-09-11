@@ -29,7 +29,26 @@ public class SwaggerConfig {
         public GroupedOpenApi publicApi() {
                 return GroupedOpenApi.builder()
                         .group("public")
-                        .pathsToMatch("/cadastro/**", "/questionario/**", "/relatorio/**", "/resultado/**", "/rankingEmpresas/**")
+                        .pathsToMatch(
+                        "/cadastro/**", 
+                        "/cadastroCnpj/**", 
+                        "/contato/**", 
+                        "/documentos/**", 
+                        "/documentosCadastrais/**", 
+                        "/documentosAmbientais/**", 
+                        "/documentosPolitica/**", 
+                        "/endereco/**", 
+                        "/login/**", 
+                        "/questionario/**", 
+                        "/questionarioE/**", 
+                        "/questionarioS/**", 
+                        "/questionarioG/**", 
+                        "/rankingEmpresas/**", 
+                        "/relatorio/**", 
+                        "/resultado/**", 
+                        "/recuperacaoSenha/**"
+                        )
                         .build();
         }
+        
 }
