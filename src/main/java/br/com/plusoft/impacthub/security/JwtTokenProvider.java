@@ -16,8 +16,8 @@ public class JwtTokenProvider {
     @Value("${security.jwt.secret-key}")
     private String secretKey;
 
-    @Value("${security.jwt.token-expiration}")
-    private long validityInMilliseconds;
+    @Value("${jwt.token.validity}")
+    private long validityInMilliseconds; 
 
     public String generateToken(Authentication authentication) {
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
