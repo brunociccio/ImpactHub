@@ -44,14 +44,18 @@ public class SecurityConfig {
         http
             .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/login", "/docs/**", "/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll() // Permite acesso a estas rotas sem autenticação
-                .anyRequest().authenticated()
+                .requestMatchers("/custom-login", "/docs/**", "/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll() // Permite acesso a estas rotas sem autenticação
+                .anyRequest().permitAll() // Permite acesso a todos os outros endpoints
             )
             .formLogin(form -> form
-                .loginPage("/login") 
+                .loginPage("/custom-login") // Define a URL personalizada da página de login
+                .defaultSuccessUrl("/home", true) // URL após login bem-sucedido
                 .permitAll()
             )
-            .logout(logout -> logout.permitAll());
+            .logout(logout -> logout
+                .logoutUrl("/logout")
+                .logoutSuccessUrl("/custom-login?logout")
+                .permitAll());
         return http.build();
     }
 

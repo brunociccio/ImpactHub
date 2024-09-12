@@ -31,7 +31,7 @@ import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 
 @RestController
-@RequestMapping("/login")
+@RequestMapping("/api/login") // Mapeamento da API de login em um caminho separado
 @Tag(name = "Login", description = "APIs relacionadas ao gerenciamento de logins")
 @Slf4j
 public class LoginController {
