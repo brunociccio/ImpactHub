@@ -10,7 +10,7 @@ Este projeto é uma aplicação Java Spring Boot para o sistema `ImpactHub`, com
 - Java 17+ instalado
 - Maven instalado
 - Visual Studio Code com as extensões da Azure
-- API back-end desenvolvida por: bruno ciccio
+- API back-end desenvolvida por: Bruno Ciccio (dev.bruno.ciccio@gmail.com)
 - Grupo: FIVE TECH COLLECTIVE - Projeto Impact Hub
 
 ### Integrantes:
