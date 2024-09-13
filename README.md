@@ -109,9 +109,9 @@ az webapp config connection-string set \
 ### 5.Testando a aplicação
 
 #### Acesse o Web App:
-http://impacthub-webapp.azurewebsites.net/home para a página principal da API back-end
-http://impacthub-webapp.azurewebsites.net/docs para acessar a documentação no swagger
-http://impacthub-webapp.azurewebsites.net/cadastro esse endpoint já está feito o CRUD como teste
+https://webapp-impacthub.azurewebsites.net/home para a página principal da API back-end
+https://webapp-impacthub.azurewebsites.net/docs para acessar a documentação no swagger
+https://webapp-impacthub.azurewebsites.net/cadastro esse endpoint já está feito o CRUD como teste
 
 #### Teste os Endpoints da API no Insomnia
 (o arquivo do Insomnia_2024-09-12.json está na pasta raíz do projeto)
