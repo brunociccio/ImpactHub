@@ -102,7 +102,7 @@ az webapp create \
 az webapp config connection-string set \
   --resource-group rg-impacthub \
   --name impacthub-webapp \
-  --settings "DATABASE_URL=jdbc:oracle:thin:@seu-servidor-oracle.database.windows.net:1521/impacthub-db;DATABASE_USERNAME=seu-usuario-admin;DATABASE_PASSWORD=sua-senha-admin" \
+  --settings "DATABASE_URL=jdbc:oracle:thin:@seu-servidor-oracle.database.windows.net:1521/impacthub-db;DATABASE_USERNAME=${DB_USER};DATABASE_PASSWORD=${DB_PASS}" \
   --connection-string-type SQLAzure
 ```
 
@@ -121,14 +121,15 @@ https://webapp-impacthub.azurewebsites.net/cadastro esse endpoint já está feit
 - PUT /cadastro/{id} - Atualiza um cadastro existente
 - DELETE /cadastro/{id} - Exclui um cadastro pelo ID
 
-Vale ressaltar quando for testar os endpoints no insomnia, para fazer um CRUD na classe cadastro é necessário você criar
-outros CRUDs em subclasses por conta do encapsulamento e herança, seguindo a ordem exata: 
+Vale ressaltar: quando for testar os endpoints no insomnia, para fazer um CRUD na classe cadastro é necessário você criar
+outros CRUDs em classes filhas por conta do encapsulamento de informações e herança, seguindo a ordem exata: 
 1. /CadastroCNPJ
 2. /Contato
 3. /Endereco
 4. /Documento
 5. /Login
 Por fim testar o CRUD completo na classe de Cadastro, porém, já é possível testar o CRUD em todas as classes citas acima
+anteriormente do teste do CRUD na classe de Cadastro.
 6. /Cadastro
 
 Caso precise de uma instrução de criação das tabelas de maneira sequencial para teste, o arquivo com o script.sql está
