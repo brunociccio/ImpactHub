@@ -133,4 +133,4 @@ anteriormente do teste do CRUD na classe de Cadastro.
 6. /Cadastro
 
 Caso precise de uma instrução de criação das tabelas de maneira sequencial para teste, o arquivo com o script.sql está
-dentro da pasta resources>db/migration o arquivo se chama V1__criar_tabelas_iniciais.sql
+dentro da pasta resources>db/migration o arquivo se chama V1__criar_tabelas_iniciais.sql (DDL)
