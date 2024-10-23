@@ -35,26 +35,33 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-            .csrf(csrf -> csrf.disable())
+            .csrf(csrf -> csrf.disable()) // Desabilita o CSRF por enquanto
             .authorizeHttpRequests(auth -> auth
-                // Permite acesso livre à página de login e aos recursos estáticos (CSS, JS, etc.)
-                .requestMatchers("/custom-login", "/css/**", "/js/**", "/images/**", "/docs/**", "/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
-                // Qualquer outra requisição precisa estar autenticada
+                // Permite acesso à página de login e aos recursos estáticos (CSS, JS, etc.)
+                .requestMatchers("/custom-login", "/oauth2/authorization/github", "/css/**", "/js/**", "/images/**").permitAll()
+                // Exige autenticação para qualquer outra requisição
                 .anyRequest().authenticated()
             )
             .formLogin(form -> form
-                .loginPage("/custom-login") // Página de login customizada
-                .loginProcessingUrl("/login") // Endpoint padrão de processamento de login
+                .loginPage("/custom-login") // Página de login customizada que desenvolvemos
+                .loginProcessingUrl("/login") // URL para processar o login via formulário
                 .defaultSuccessUrl("/home", true)  // Redireciona para /home após login bem-sucedido
-                .failureUrl("/custom-login?error=true") // Exibe erro ao falhar login
-                .permitAll()
+                .failureUrl("/custom-login?error=true") // Redireciona para a página de login com erro
+                .permitAll() // Permite o acesso a qualquer pessoa à página de login
             )
             .oauth2Login(oauth2 -> oauth2
                 .loginPage("/custom-login")  // Página de login customizada para OAuth2
                 .defaultSuccessUrl("/home", true)  // Redireciona para /home após login via OAuth2 (GitHub)
+            )
+            .logout(logout -> logout
+                .logoutUrl("/logout")  // URL para logout
+                .logoutSuccessUrl("/custom-login?logout=true") // Redireciona para página de login após logout
+                .permitAll()
             );
         return http.build();
     }
+    
+
 
     @Bean
     public AuthenticationManager authenticationManager(HttpSecurity http) throws Exception {
@@ -66,3 +73,4 @@ public class SecurityConfig {
         return authenticationManagerBuilder.build();
     }
 }
+
