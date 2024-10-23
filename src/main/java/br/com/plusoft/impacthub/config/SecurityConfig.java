@@ -45,11 +45,11 @@ public class SecurityConfig {
             .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/custom-login", "/docs/**", "/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll() // Permite acesso a estas rotas sem autenticação
-                .anyRequest().permitAll() // Permite acesso a todos os outros endpoints
+                .anyRequest().permitAll() 
             )
             .formLogin(form -> form
-                .loginPage("/custom-login") // Define a URL personalizada da página de login
-                .defaultSuccessUrl("/home", true) // URL após login bem-sucedido
+                .loginPage("/custom-login") 
+                .defaultSuccessUrl("/home", true) 
                 .permitAll()
             )
             .logout(logout -> logout
