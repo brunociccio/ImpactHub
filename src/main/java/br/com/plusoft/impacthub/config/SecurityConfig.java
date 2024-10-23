@@ -1,6 +1,5 @@
 package br.com.plusoft.impacthub.config;
 
-import br.com.plusoft.impacthub.security.JwtTokenProvider;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -18,12 +17,6 @@ import org.springframework.security.web.SecurityFilterChain;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
-
-    private final JwtTokenProvider tokenProvider;
-
-    public SecurityConfig(JwtTokenProvider tokenProvider) {
-        this.tokenProvider = tokenProvider;
-    }
 
     @Bean
     public UserDetailsService userDetailsService() {
@@ -44,18 +37,22 @@ public class SecurityConfig {
         http
             .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/custom-login", "/docs/**", "/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll() // Permite acesso a estas rotas sem autenticação
-                .anyRequest().permitAll() 
+                // Permite acesso livre à página de login e aos recursos estáticos (CSS, JS, etc.)
+                .requestMatchers("/custom-login", "/css/**", "/js/**", "/images/**", "/docs/**", "/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
+                // Qualquer outra requisição precisa estar autenticada
+                .anyRequest().authenticated()
             )
             .formLogin(form -> form
-                .loginPage("/custom-login") 
-                .defaultSuccessUrl("/home", true) 
+                .loginPage("/custom-login") // Página de login customizada
+                .loginProcessingUrl("/login") // Endpoint padrão de processamento de login
+                .defaultSuccessUrl("/home", true)  // Redireciona para /home após login bem-sucedido
+                .failureUrl("/custom-login?error=true") // Exibe erro ao falhar login
                 .permitAll()
             )
-            .logout(logout -> logout
-                .logoutUrl("/logout")
-                .logoutSuccessUrl("/custom-login?logout")
-                .permitAll());
+            .oauth2Login(oauth2 -> oauth2
+                .loginPage("/custom-login")  // Página de login customizada para OAuth2
+                .defaultSuccessUrl("/home", true)  // Redireciona para /home após login via OAuth2 (GitHub)
+            );
         return http.build();
     }
 
