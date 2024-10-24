@@ -1,6 +1,6 @@
 package br.com.plusoft.impacthub.service;
 
-import org.springframework.beans.factory.annotation.Value;
+import io.github.cdimascio.dotenv.Dotenv;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -14,8 +14,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @Service
 public class ChatEsgService {
 
-    @Value("${spring.ai.openai.api-key}")
-    private String openAiApiKey;
+    // Carrega a variável de ambiente da API key
+    private final Dotenv dotenv = Dotenv.configure().load();
+    private final String openAiApiKey = dotenv.get("OPENAI_API_KEY");
 
     public String getAnswerFromAi(String question) {
         try {
