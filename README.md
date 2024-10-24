@@ -1,6 +1,14 @@
+
 # ImpactHub - Java Spring Boot Application
 
 Este projeto é uma aplicação Java Spring Boot para o sistema `ImpactHub`, com um banco de dados Oracle hospedado na Azure e implantação de um Web App na Azure.
+
+## CRED
+- API Java Spring Boot com Maven e Thymeleaf desenvolvida por Bruno Ciccio
+- Desenolvedor Full-Stack Java e DevOps
+- GitHub: https://github.com/brunociccio
+- Linkedin: https://www.linkedin.com/in/bruno-ciccio/
+- email: dev.bruno.ciccio@gmail.com
 
 ## Requisitos
 
@@ -10,19 +18,6 @@ Este projeto é uma aplicação Java Spring Boot para o sistema `ImpactHub`, com
 - Java 17+ instalado
 - Maven instalado
 - Visual Studio Code com as extensões da Azure
-- API back-end desenvolvida por: Bruno Ciccio (dev.bruno.ciccio@gmail.com)
-- Grupo: FIVE TECH COLLECTIVE - Projeto Impact Hub
-
-### Integrantes:
-BRUNO MATHEWS DE CICICO OLIVEIRA - RM 99097 - Java Advanced e Devops
-
-ISABELLE CORSI - RM 97751 - Mastering Relational and Non-Relationl Database
-
-JOSÉ LUIZ FERREIRA DUARTE - RM 99488 - Mobile Application Development
-
-MARINA DE SOUZA CUCCO - RM 551569 - Complice, Quality Assurance and Tests e Disruptive Architectures
-
-THALITA FACHINETE DE ALENCAR - RM 99292 - Advanced Business Development With .NET e Disruptive Architectures
 
 ## Passo a Passo para Implantação
 
@@ -35,7 +30,7 @@ git clone https://github.com/brunociccio/ImpactHub
 cd impacthub
 ```
 
-### 2.Configuração do Banco de Dados na Azure
+### 2. Configuração do Banco de Dados na Azure
 
 #### Crie um Servidor Oracle na Azure:
 
@@ -48,7 +43,7 @@ az sql server create \
   --admin-password sua-senha-admin
 ```
 
-#### Crie o Banco de DAdos no Servidor Oracle:
+#### Crie o Banco de Dados no Servidor Oracle:
 
 ```bash
 az sql db create \
@@ -70,19 +65,32 @@ az sql server firewall-rule create \
   --end-ip-address <SEU_IP_FINAL>
 ```
 
-### 3.Configuração da Aplicação
+### 3. Configuração da Aplicação
 
-#### Atualize o arquivo application.properties com as informações do banco de dados Oracle
-Para isso criei um arquivo .env aonde coloquei as credenciais e no arquivo properpeties coloquei essas credenciais em forma de variaveis por questão de segurança
+#### Atualize o arquivo `.env` com as informações do banco de dados Oracle e a chave da API da OpenAI
+
+Crie um arquivo `.env` com as seguintes variáveis de ambiente:
 
 ```bash
-spring.datasource.url=jdbc:oracle:thin:@seu-servidor-oracle.database.windows.net:1521/impacthub-db
-spring.datasource.username=seu-usuario-admin
-spring.datasource.password=sua-senha-admin
-spring.datasource.driver-class-name=oracle.jdbc.OracleDriver
+DB_URL=jdbc:oracle:thin:@seu-servidor-oracle.database.windows.net:1521/impacthub-db
+DB_USER=seu-usuario-admin
+DB_PASS=sua-senha-admin
+OPENAI_API_KEY=sua-chave-api-openai
+
 ```
 
-### 4.Implantação do WebApp na Azure
+Em seguida, no arquivo `application.properties`, configure para ler as variáveis:
+
+```properties
+spring.datasource.url=${DB_URL}
+spring.datasource.username=${DB_USER}
+spring.datasource.password=${DB_PASS}
+spring.datasource.driver-class-name=oracle.jdbc.OracleDriver
+spring.ai.openai.api-key=${OPENAI_API_KEY}
+```
+A chave da API da OpenAI (OPENAI_API_KEY) é necessária para o funcionamento correto do chatbot na página de Chat ESG.
+
+### 4. Implantação do WebApp na Azure
 
 #### Crie um Web App na Azure:
 
@@ -106,31 +114,52 @@ az webapp config connection-string set \
   --connection-string-type SQLAzure
 ```
 
-### 5.Testando a aplicação
+### 5. Login e Autenticação
 
-#### Acesse o Web App:
-https://webapp-impacthub.azurewebsites.net/home para a página principal da API back-end
-https://webapp-impacthub.azurewebsites.net/docs para acessar a documentação no swagger
-https://webapp-impacthub.azurewebsites.net/cadastro esse endpoint já está feito o CRUD como teste
+O sistema permite o login de duas formas:
+- **Login com credenciais cadastradas**: Use seu nome de usuário e senha na página de login.
+- **Login via GitHub**: Utilize o botão de login via GitHub, que redireciona para a autenticação OAuth2 no GitHub.
 
-#### Teste os Endpoints da API no Insomnia
-(o arquivo do Insomnia_2024-09-12.json está na pasta raíz do projeto)
+#### Após o login:
+- O usuário será redirecionado para a página de **Chat ESG** no endpoint `/chatEsg`, onde é possível interagir com o chatbot especializado em ESG.
+- O botão de logout está disponível na página de chat para encerrar a sessão.
+
+### Credenciais (cadastrada) para testar a API
+- login: impacthub
+- senha: impacthub
+ 
+### 6. Endpoints e Testes
+
+#### Teste os Endpoints da API no Insomnia ou Swagger
+
+- Acesse o Swagger da API no endpoint:
+  - [Swagger Documentation](https://webapp-impacthub.azurewebsites.net/docs)
+  - http://localhost:8080/docs
+
+- Acesse o backend:
+  - [Página Inicial da API](https://webapp-impacthub.azurewebsites.net/home)
+  - http://localhost:8080/home
+
+Endpoints importantes para teste no Insomnia:
 - GET /cadastro - Lista todos os cadastros
 - POST /cadastro - Cria um novo cadastro
 - GET /cadastro/{id} - Retorna um cadastro específico pelo ID
 - PUT /cadastro/{id} - Atualiza um cadastro existente
 - DELETE /cadastro/{id} - Exclui um cadastro pelo ID
 
-Vale ressaltar: quando for testar os endpoints no insomnia, para fazer um CRUD na classe cadastro é necessário você criar
-outros CRUDs em classes filhas por conta do encapsulamento de informações e herança, seguindo a ordem exata: 
+#### Ordem correta dos CRUDs para testes de relacionamento:
+
 1. /CadastroCNPJ
 2. /Contato
 3. /Endereco
 4. /Documento
 5. /Login
-Por fim testar o CRUD completo na classe de Cadastro, porém, já é possível testar o CRUD em todas as classes citas acima
-anteriormente do teste do CRUD na classe de Cadastro.
 6. /Cadastro
 
-Caso precise de uma instrução de criação das tabelas de maneira sequencial para teste, o arquivo com o script.sql está
-dentro da pasta resources>db/migration o arquivo se chama V1__criar_tabelas_iniciais.sql (DDL)
+### 7. Scripts de Banco de Dados
+
+Para criar as tabelas no banco de dados Oracle, utilize o script `V1__criar_tabelas_iniciais.sql`, que se encontra na pasta `resources/db/migration`.
+
+### Conclusão
+
+Este projeto oferece uma solução integrada com Oracle na Azure, deploy automatizado via WebApp na Azure e autenticação via OAuth2 com GitHub, além do login tradicional. Todas as funcionalidades foram projetadas para garantir segurança e escalabilidade na aplicação.
