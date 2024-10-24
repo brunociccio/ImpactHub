@@ -17,7 +17,7 @@ public class ImpacthubApplication {
 	@RequestMapping("/home")
     @ResponseBody
     public String home() {
-        return "API Back-End do Projeto ImpactHub: Challenge da Plusoft ";
+        return "Projeto Full-Stack";
     }
 
 }
