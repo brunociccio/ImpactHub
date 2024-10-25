@@ -26,7 +26,7 @@ public class ImpacthubApplication {
 	@RequestMapping("/home")
     @ResponseBody
     public String home() {
-        return "API Full-Stack do projeto Impact Hub";
+        return "API Full-Stack do Projeto Impact Hub";
     }
 
 }
