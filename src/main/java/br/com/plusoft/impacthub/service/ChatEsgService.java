@@ -61,7 +61,7 @@ public class ChatEsgService {
     
     // Método para verificar saudações
     private boolean isGreeting(String question) {
-        String[] greetings = {"oi", "olá", "tudo bem", "bom dia", "boa tarde", "boa noite", "cordialidades"};
+        String[] greetings = {"oi", "olá", "ola", "tudo bem", "bom dia", "boa tarde", "boa noite", "cordialidades"};
         for (String greeting : greetings) {
             if (question.toLowerCase().contains(greeting)) {
                 return true;
