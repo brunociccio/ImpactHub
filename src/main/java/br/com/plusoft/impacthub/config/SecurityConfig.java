@@ -22,9 +22,15 @@ public class SecurityConfig {
     public UserDetailsService userDetailsService() {
         UserDetails user = User.withUsername("impacthub")
                 .password(passwordEncoder().encode("impacthub"))
-                .roles("USER")
+                .roles("USER") // Define a função USER para permissões limitadas
                 .build();
-        return new InMemoryUserDetailsManager(user);
+
+        UserDetails admin = User.withUsername("adminImpacthub")
+                .password(passwordEncoder().encode("impacthub"))
+                .roles("ADMIN") // Define a função ADMIN para permissões completas
+                .build();
+
+        return new InMemoryUserDetailsManager(user, admin);
     }
 
     @Bean
@@ -39,7 +45,11 @@ public class SecurityConfig {
             .authorizeHttpRequests(auth -> auth
                 // Permite acesso apenas à página de login e recursos estáticos
                 .requestMatchers("/custom-login", "/css/**", "/js/**", "/images/**").permitAll()
-                // Qualquer outra requisição exige autenticação
+                // Permite acesso ao endpoint /chatEsg apenas para usuários com a função USER
+                .requestMatchers("/chatEsg").hasAnyRole("USER", "ADMIN")
+                // Permite acesso a todos os endpoints para usuários com a função ADMIN
+                .requestMatchers("/**").hasRole("ADMIN")
+                // Exige autenticação para qualquer outra requisição
                 .anyRequest().authenticated()
             )
             .formLogin(form -> form

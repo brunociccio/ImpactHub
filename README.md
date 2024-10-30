@@ -4,8 +4,7 @@
 Este projeto é uma aplicação Java Spring Boot para o sistema `ImpactHub`, com um banco de dados Oracle hospedado na Azure e implantação de um Web App na Azure.
 
 ## CRED
-- API Java Spring Boot com Maven e Thymeleaf desenvolvida por Bruno Ciccio
-- Desenolvedor Full-Stack Java e DevOps
+- API Java Spring Boot com Maven e Thymeleaf desenvolvida por Bruno Ciccio - Desenolvedor Full-Stack Java e DevOps
 - GitHub: https://github.com/brunociccio
 - Linkedin: https://www.linkedin.com/in/bruno-ciccio/
 - email: dev.bruno.ciccio@gmail.com
@@ -123,10 +122,12 @@ O sistema permite o login de duas formas:
 #### Após o login:
 - O usuário será redirecionado para a página de **Chat ESG** no endpoint `/chatEsg`, onde é possível interagir com o chatbot especializado em ESG.
 - O botão de logout está disponível na página de chat para encerrar a sessão.
+- O usuário padrão só tem acesso a página de **Login** e **Chat ESG**, já o usuário de admin tem privilégios de acessar todos os endpoints, documentação, rabbitMQ, fazer CRUD, etc
 
 ### Credenciais (cadastrada) para testar a API
-- login: impacthub
-- senha: impacthub
+- login: impacthub (usuário padrão)
+- login: adminImpacthub (usuário com acesso total)
+- senha: impacthub (mesma senha para testar ambos os perfis)
  
 ### 6. Endpoints e Testes
 
@@ -139,6 +140,10 @@ O sistema permite o login de duas formas:
 - Acesse o backend:
   - [Página Inicial da API](https://webapp-impacthub.azurewebsites.net/home)
   - http://localhost:8080/home
+
+- Acesse a tela de login:
+  - [Página Inicial da API](https://webapp-impacthub.azurewebsites.net/custom-login)
+  - http://localhost:8080/custom-login
 
 Endpoints importantes para teste no Insomnia:
 - GET /cadastro - Lista todos os cadastros
