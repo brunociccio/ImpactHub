@@ -1,6 +1,5 @@
 package br.com.plusoft.impacthub.service;
 
-import io.github.cdimascio.dotenv.Dotenv;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -10,6 +9,8 @@ import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import io.github.cdimascio.dotenv.Dotenv;
 
 @Service
 public class ChatEsgService {
@@ -24,12 +25,15 @@ public class ChatEsgService {
             headers.set("Authorization", "Bearer " + openAiApiKey);
             headers.set("Content-Type", "application/json");
 
-            // Ajuste para respostas mais naturais em perguntas simples
+            // Ajuste para respostas mais naturais em perguntas simples e restrição ao tema ESG
             String prompt;
             if (question.equalsIgnoreCase("Olá") || question.equalsIgnoreCase("Oi")) {
                 prompt = "Diga 'Olá! Tudo bem? Sou uma IA especializada em ESG, como posso ajudar?'";
+            } else if (!isRelatedToESG(question)) { 
+                // Retorna uma resposta padrão se o assunto for irrelevante
+                return "Posso ajudar com assuntos sobre ESG. Por favor, pergunte algo sobre meio ambiente, sustentabilidade, governança ou responsabilidade social.";
             } else {
-                prompt = "Você é um especialista em ESG: " + question;
+                prompt = "Você é um especialista em ESG. Responda apenas a perguntas sobre ESG. Pergunta: " + question;
             }
 
             String requestBody = "{"
@@ -53,6 +57,17 @@ public class ChatEsgService {
         } catch (Exception e) {
             return "Erro ao chamar a IA: " + e.getMessage();
         }
+    }
+
+    // Método para verificar se a pergunta é relacionada ao ESG
+    private boolean isRelatedToESG(String question) {
+        String[] esgKeywords = {"meio ambiente", "sustentabilidade", "governança", "responsabilidade social", "esg"};
+        for (String keyword : esgKeywords) {
+            if (question.toLowerCase().contains(keyword)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     // Método para extrair a resposta JSON
