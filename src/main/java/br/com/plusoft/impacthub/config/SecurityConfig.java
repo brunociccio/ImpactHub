@@ -39,7 +39,7 @@ public class SecurityConfig {
             .authorizeHttpRequests(auth -> auth
                 // Permite acesso apenas à página de login e recursos estáticos
                 .requestMatchers("/custom-login", "/css/**", "/js/**", "/images/**").permitAll()
-                // Exige autenticação para qualquer outra requisição
+                // Qualquer outra requisição exige autenticação
                 .anyRequest().authenticated()
             )
             .formLogin(form -> form
