@@ -24,41 +24,52 @@ public class ChatEsgService {
             HttpHeaders headers = new HttpHeaders();
             headers.set("Authorization", "Bearer " + openAiApiKey);
             headers.set("Content-Type", "application/json");
-
-            // Ajuste para respostas mais naturais em perguntas simples e restrição ao tema ESG
+    
+            // Ajuste para saudações e restrição ao tema ESG
             String prompt;
-            if (question.equalsIgnoreCase("Olá") || question.equalsIgnoreCase("Oi")) {
+            if (isGreeting(question)) {
                 prompt = "Diga 'Olá! Tudo bem? Sou uma IA especializada em ESG, como posso ajudar?'";
             } else if (!isRelatedToESG(question)) { 
                 // Retorna uma resposta padrão se o assunto for irrelevante
-                return "Posso ajudar com assuntos sobre ESG. Por favor, pergunte algo sobre meio ambiente, sustentabilidade, governança ou responsabilidade social.";
+                return "Posso ajudar somente com assuntos sobre ESG. Por favor, pergunte algo sobre meio ambiente, sustentabilidade, governança ou responsabilidade social.";
             } else {
                 prompt = "Você é um especialista em ESG. Responda apenas a perguntas sobre ESG. Pergunta: " + question;
             }
-
+    
             String requestBody = "{"
                     + "\"model\": \"gpt-3.5-turbo\","
                     + "\"messages\": [{\"role\": \"user\", \"content\": \"" + prompt + "\"}],"
                     + "\"max_tokens\": 100"
                     + "}";
-
+    
             HttpEntity<String> request = new HttpEntity<>(requestBody, headers);
             RestTemplate restTemplate = new RestTemplate();
             ResponseEntity<String> response = restTemplate.exchange(
                     "https://api.openai.com/v1/chat/completions",
                     HttpMethod.POST, request, String.class);
-
+    
             if (response.getStatusCode().is2xxSuccessful()) {
                 return extractResponse(response.getBody());
             } else {
                 return "Erro: " + response.getStatusCode();
             }
-
+    
         } catch (Exception e) {
             return "Erro ao chamar a IA: " + e.getMessage();
         }
     }
-
+    
+    // Método para verificar saudações
+    private boolean isGreeting(String question) {
+        String[] greetings = {"oi", "olá", "tudo bem", "bom dia", "boa tarde", "boa noite", "cordialidades"};
+        for (String greeting : greetings) {
+            if (question.toLowerCase().contains(greeting)) {
+                return true;
+            }
+        }
+        return false;
+    }
+    
     // Método para verificar se a pergunta é relacionada ao ESG
     private boolean isRelatedToESG(String question) {
         String[] esgKeywords = {"meio ambiente", "sustentabilidade", "governança", "responsabilidade social", "esg"};
@@ -69,6 +80,7 @@ public class ChatEsgService {
         }
         return false;
     }
+    
 
     // Método para extrair a resposta JSON
     private String extractResponse(String responseBody) {
