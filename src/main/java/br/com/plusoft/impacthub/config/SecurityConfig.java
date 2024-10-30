@@ -39,6 +39,8 @@ public class SecurityConfig {
             .authorizeHttpRequests(auth -> auth
                 // Permite acesso à página de login e aos recursos estáticos (CSS, JS, etc.)
                 .requestMatchers("/custom-login", "/oauth2/authorization/github", "/css/**", "/js/**", "/images/**").permitAll()
+                // Permite acesso a todos os endpoints da API para autenticação básica
+                .requestMatchers("/api/**").authenticated()
                 // Exige autenticação para qualquer outra requisição
                 .anyRequest().authenticated()
             )
@@ -49,6 +51,8 @@ public class SecurityConfig {
                 .failureUrl("/custom-login?error=true") // Redireciona para a página de login com erro
                 .permitAll() // Permite o acesso a qualquer pessoa à página de login
             )
+            .httpBasic() // Permite autenticação básica para APIs
+            .and() // Conclui a configuração de autenticação básica e inicia o próximo bloco
             .oauth2Login(oauth2 -> oauth2
                 .loginPage("/custom-login")  // Página de login customizada para OAuth2
                 .defaultSuccessUrl("/chatEsg", true)  // Redireciona para /chatEsg após login via OAuth2 (GitHub)
@@ -60,7 +64,6 @@ public class SecurityConfig {
             );
         return http.build();
     }
-    
 
     @Bean
     public AuthenticationManager authenticationManager(HttpSecurity http) throws Exception {
