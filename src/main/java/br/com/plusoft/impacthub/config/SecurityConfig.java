@@ -41,11 +41,13 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-            .csrf(csrf -> csrf.disable()) // Desabilita o CSRF
+            .csrf(csrf -> csrf.disable()) // Desabilita o CSRF para simplificar as requisições
             .authorizeHttpRequests(auth -> auth
                 // Permite acesso apenas à página de login e recursos estáticos
                 .requestMatchers("/custom-login", "/css/**", "/js/**", "/images/**").permitAll()
-                // Permite acesso ao endpoint /chatEsg apenas para usuários com a função USER
+                // Permite acesso público aos endpoints de cadastro
+                .requestMatchers("/CadastroCNPJ", "/Contato", "/Endereco", "/Documento", "/Login", "/Cadastro").permitAll()
+                // Permite acesso ao endpoint /chatEsg apenas para usuários com as funções USER ou ADMIN
                 .requestMatchers("/chatEsg").hasAnyRole("USER", "ADMIN")
                 // Permite acesso a todos os endpoints para usuários com a função ADMIN
                 .requestMatchers("/**").hasRole("ADMIN")
@@ -53,14 +55,14 @@ public class SecurityConfig {
                 .anyRequest().authenticated()
             )
             .formLogin(form -> form
-                .loginPage("/custom-login") // Página de login customizada 
+                .loginPage("/custom-login") // Página de login customizada
                 .loginProcessingUrl("/login") // URL para processar o login via formulário
                 .defaultSuccessUrl("/chatEsg", true)  // Redireciona para /chatEsg após login bem-sucedido
                 .failureUrl("/custom-login?error=true") // Redireciona para a página de login com erro
                 .permitAll() // Permite o acesso a qualquer pessoa à página de login
             )
             .httpBasic() // Permite autenticação básica para testes no Insomnia
-            .and() // Conclui a configuração de autenticação básica e inicia o próximo bloco
+            .and()
             .oauth2Login(oauth2 -> oauth2
                 .loginPage("/custom-login")  // Página de login customizada para OAuth2
                 .defaultSuccessUrl("/chatEsg", true)  // Redireciona para /chatEsg após login via OAuth2 (GitHub)
@@ -72,6 +74,7 @@ public class SecurityConfig {
             );
         return http.build();
     }
+    
 
     @Bean
     public AuthenticationManager authenticationManager(HttpSecurity http) throws Exception {
