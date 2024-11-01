@@ -1,14 +1,15 @@
-# Usando uma imagem base do OpenJDK
-FROM openjdk:17-jdk-alpine
-
-# Diretório de trabalho no contêiner
+# Build Stage
+FROM ringcentral/maven:3.8.2-jdk17 as build
 WORKDIR /app
+COPY . .
+RUN mvn clean package -DskipTests
 
-# Copia o arquivo JAR da aplicação para o contêiner
-COPY target/impacthub-0.0.1-SNAPSHOT.jar app.jar
-
-# Expõe a porta em que a aplicação irá rodar
+# Package Stage
+FROM eclipse-temurin:17-jdk-alpine
+WORKDIR /app
+COPY --from=build /app/target/impacthub-0.0.1-SNAPSHOT.jar app.jar
 EXPOSE 8080
+ENTRYPOINT ["java","-jar","app.jar"]
 
-# Comando para iniciar a aplicação
-ENTRYPOINT ["java", "-jar", "app.jar"]
+
+
