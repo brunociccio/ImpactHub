@@ -6,27 +6,18 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import io.github.cdimascio.dotenv.Dotenv;
-
 @SpringBootApplication
 @Controller
 public class ImpacthubApplication {
 
-	    public static void main(String[] args) {
-        // Carrega as variáveis do arquivo .env
-        Dotenv dotenv = Dotenv.configure().ignoreIfMissing().load();
+    public static void main(String[] args) {
+        // Inicializa a aplicação Spring Boot sem carregar o arquivo .env
+        SpringApplication.run(ImpacthubApplication.class, args);
+    }
 
-        // Lê a chave da API da OpenAI do arquivo .env
-        String openAiApiKey = dotenv.get("OPENAI_API_KEY");
-        
-        // Inicializa a aplicação Spring Boot
-		SpringApplication.run(ImpacthubApplication.class, args);
-	}
-
-	@RequestMapping("/home")
+    @RequestMapping("/home")
     @ResponseBody
     public String home() {
         return "API Full-Stack do Projeto Impact Hub";
     }
-
 }

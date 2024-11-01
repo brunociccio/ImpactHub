@@ -1,5 +1,6 @@
 package br.com.plusoft.impacthub.service;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -10,21 +11,19 @@ import org.springframework.web.client.RestTemplate;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import io.github.cdimascio.dotenv.Dotenv;
-
 @Service
 public class ChatEsgService {
 
-    // Carrega a variável de ambiente da API key
-    private final Dotenv dotenv = Dotenv.configure().load();
-    private final String openAiApiKey = dotenv.get("OPENAI_API_KEY");
+    // Injeta a chave da API do OpenAI a partir do application.properties ou variáveis de ambiente
+    @Value("${spring.ai.openai.api-key}")
+    private String openAiApiKey;
 
     public String getAnswerFromAi(String question) {
         try {
             HttpHeaders headers = new HttpHeaders();
             headers.set("Authorization", "Bearer " + openAiApiKey);
             headers.set("Content-Type", "application/json");
-    
+
             // Ajuste para saudações e restrição ao tema ESG
             String prompt;
             if (isGreeting(question)) {
@@ -35,30 +34,30 @@ public class ChatEsgService {
             } else {
                 prompt = "Você é um especialista em ESG. Responda apenas a perguntas sobre ESG. Pergunta: " + question;
             }
-    
+
             String requestBody = "{"
                     + "\"model\": \"gpt-3.5-turbo\","
                     + "\"messages\": [{\"role\": \"user\", \"content\": \"" + prompt + "\"}],"
                     + "\"max_tokens\": 100"
                     + "}";
-    
+
             HttpEntity<String> request = new HttpEntity<>(requestBody, headers);
             RestTemplate restTemplate = new RestTemplate();
             ResponseEntity<String> response = restTemplate.exchange(
                     "https://api.openai.com/v1/chat/completions",
                     HttpMethod.POST, request, String.class);
-    
+
             if (response.getStatusCode().is2xxSuccessful()) {
                 return extractResponse(response.getBody());
             } else {
                 return "Erro: " + response.getStatusCode();
             }
-    
+
         } catch (Exception e) {
             return "Erro ao chamar a IA: " + e.getMessage();
         }
     }
-    
+
     // Método para verificar saudações
     private boolean isGreeting(String question) {
         String[] greetings = {"oi", "olá", "ola", "tudo bem", "bom dia", "boa tarde", "boa noite", "cordialidades"};
@@ -69,7 +68,7 @@ public class ChatEsgService {
         }
         return false;
     }
-    
+
     // Método para verificar se a pergunta é relacionada ao ESG
     private boolean isRelatedToESG(String question) {
         String[] esgKeywords = {"meio ambiente", "sustentabilidade", "governança", "responsabilidade social", "esg"};
@@ -80,7 +79,6 @@ public class ChatEsgService {
         }
         return false;
     }
-    
 
     // Método para extrair a resposta JSON
     private String extractResponse(String responseBody) {
